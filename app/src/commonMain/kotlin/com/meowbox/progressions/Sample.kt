@@ -1,4 +1,4 @@
-package sample
+package com.meowbox.progressions
 
 expect class Sample() {
     fun checkMe(): Int

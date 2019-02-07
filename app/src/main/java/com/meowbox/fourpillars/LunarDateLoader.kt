@@ -1,12 +1,13 @@
 package com.meowbox.fourpillars
 
 import android.content.Context
+import com.meowbox.progressions.R
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
-import sample.R
 import java.io.InputStream
+
 
 /*****************************************
  *
@@ -22,7 +23,37 @@ import java.io.InputStream
  * Byte 3: Day of lunar month (1..30)
  *
  ****************************************/
+internal inline class EphemerisRecord(val data: Short) {
 
+    constructor(yearInEpoch: Byte, monthNumber: Byte, dayOfMonth: Byte) :
+            this((yearInEpoch + monthNumber * monthNumberBit + dayOfMonth * dayOfMonthBit).toShort())
+
+    val dayOfMonth: Int
+        get() = data / dayOfMonthBit
+
+    val yearPillar: Pillar get() = Pillar.all[dayOfMonth - 1]
+
+    val monthPillar: Pillar
+        get() = Pillar(
+            Stem.all[(2 * yearInEpoch + monthNumber - 1) % 10],
+            Branch.all[(monthNumber + 1) % 12]
+        )
+
+
+    val monthNumber: Int
+        get() = data.rem(dayOfMonthBit) / monthNumberBit
+
+
+    val yearInEpoch: Int
+        get() = data.rem(monthNumberBit)
+
+    companion object {
+        private const val monthNumberBit: Short = 64
+        private const val dayOfMonthBit: Short = 1024
+        private const val initialDayPillarNum = 10
+    }
+
+}
 
 actual class Ephemeris(private val dates: Array<Short>) {
     constructor (inputStream: InputStream) : this(inputStream.readBytes()
@@ -61,37 +92,6 @@ actual class Ephemeris(private val dates: Array<Short>) {
             Chart.forLunarDateAndTime(this.lunarDate(it.toLocalDate()), it.toLocalTime())
         }
 
-
-    internal class EphemerisRecord(val data: Short) {
-
-        constructor(yearInEpoch: Byte, monthNumber: Byte, dayOfMonth: Byte) :
-                this((yearInEpoch + monthNumber * monthNumberBit + dayOfMonth * dayOfMonthBit).toShort())
-
-        fun toLunarDate(pillarNumber: Byte) =
-            LunarDate(yearInEpoch, monthNumber, dayOfMonth, ((pillarNumber) % 60).toByte())
-
-        private val dayOfMonth: Byte
-            get() {
-                return (data / dayOfMonthBit).toByte()
-            }
-
-        private val monthNumber: Byte
-            get() {
-                return (data.rem(dayOfMonthBit) / monthNumberBit).toByte()
-            }
-
-        private val yearInEpoch: Byte
-            get() {
-                return data.rem(monthNumberBit).toByte()
-            }
-
-        companion object {
-            private const val monthNumberBit: Short = 64
-            private const val dayOfMonthBit: Short = 1024
-        }
-
-    }
-
     private val monthNumberBit: Short = 64
     private val dayOfMonthBit: Short = 1024
 
@@ -127,8 +127,3 @@ actual class Ephemeris(private val dates: Array<Short>) {
         private const val initialDayPillarNum = 10
     }
 }
-
-//actual val starCommentData: List<StarComment> =
-//    StarComment::class.java.getResource("/starData.json").readText().let { data ->
-//        JSON.parse(StarComment.serializer().list, data)
-//    }

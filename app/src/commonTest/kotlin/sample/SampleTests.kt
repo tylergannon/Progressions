@@ -1,5 +1,7 @@
 package sample
 
+import com.meowbox.progressions.Proxy
+import com.meowbox.progressions.Sample
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
