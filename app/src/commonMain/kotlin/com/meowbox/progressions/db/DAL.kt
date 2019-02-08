@@ -1,8 +1,7 @@
 package com.meowbox.progressions.db
 
-import com.meowbox.fourpillars.Branch
-import com.meowbox.fourpillars.Pillar
-import com.meowbox.fourpillars.Stem
+import com.meowbox.DateTime
+import com.meowbox.fourpillars.*
 import com.meowbox.progressions.ChartRecord
 import com.meowbox.progressions.Database
 import com.meowbox.progressions.EphemerisPoint
@@ -10,58 +9,13 @@ import com.meowbox.progressions.StarComment
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
-import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.EnumSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.parse
-import kotlinx.serialization.stringify
 
 inline class SolarDate(val id: Int)
 
 inline class ChartRecordId(val id: Int)
-
-private fun Int.pow(p: Int) : Int =
-    if (p == 1)
-        this
-    else
-        this * this.pow(p - 1)
-
-/*********************************************************
- * Bits 00..07 (8) : 0       : Year value 0..199 in years from 1900..2099
- * Bits 08..11 (4) : 256     : Month value 1..12
- * Bits 12..16 (5) : 4096    : Day of month 1..31
- * Bits 17..21 (5) : 131072  : Hour of day 0..23
- * Bits 22..27 (6) : 4194304 : Minute of hour 0..59
- *
- *
- *
- */
-inline class DateTime(val id: Int) {
-    constructor(year: Int, monthOfYear: Int, dayOfMonth: Int, hourOfDay: Int, minuteOfHour: Int)
-            : this((year - firstYear) +
-            monthOfYear * monthMultiplier +
-            dayOfMonth * dayMultiplier +
-            hourOfDay * hourMultiplier +
-            minuteOfHour * minuteMultiplier)
-
-    val year: Int get() = firstYear + id.rem(monthMultiplier)
-    val monthOfYear: Int get() = id.rem(dayMultiplier) / monthMultiplier
-    val dayOfMonth: Int get() = id.rem(hourMultiplier) / dayMultiplier
-    val hourOfDay: Int get() = id.rem(minuteMultiplier) / hourMultiplier
-    val minuteOfHour: Int get() = id / minuteMultiplier
-
-    companion object {
-        private const val firstYear = 1900
-        private const val yearBits = 8
-        private const val monthBits = 4
-        private const val dayBits = 5
-        private const val hourBits = 5
-        private const val yearMultiplier = 1
-        private val monthMultiplier = yearMultiplier * 2.pow(yearBits)
-        private val dayMultiplier = monthMultiplier * 2.pow(monthBits)
-        private val hourMultiplier = dayMultiplier * 2.pow(dayBits)
-        private val minuteMultiplier = hourMultiplier * 2.pow(hourBits)
-    }
-}
 
 inline class LunarDate(val id: Short) {
 
@@ -96,6 +50,9 @@ inline fun <reified T : Any> serializedColumnAdapter() = object : ColumnAdapter<
     override fun decode(databaseValue: String) = Json.parse<T>(databaseValue)
 }
 
+private val branchListSerializer = EnumSerializer(Branch::class).list
+private val starSetListSerializer = EnumSerializer(Star::class).set.list
+
 
 fun createQueryWrapper(driver: SqlDriver) = Database(
     driver = driver,
@@ -103,8 +60,16 @@ fun createQueryWrapper(driver: SqlDriver) = Database(
         starAdapter = EnumColumnAdapter(),
         palaceAdapter = EnumColumnAdapter(),
         auspicesAdapter = EnumColumnAdapter(),
-        branchAdapter = serializedColumnAdapter(),
-        inHouseWithAdapter = serializedColumnAdapter()
+        branchAdapter = object : ColumnAdapter<List<Branch>, String> {
+            override fun encode(value: List<Branch>) = Json.stringify(branchListSerializer, value)
+            override fun decode(databaseValue: String) =
+                println(databaseValue).let { Json.parse(branchListSerializer, databaseValue) }
+        },
+        inHouseWithAdapter = object : ColumnAdapter<List<Set<Star>>, String> {
+            override fun encode(value: List<Set<Star>>) = Json.stringify(starSetListSerializer, value)
+            override fun decode(databaseValue: String) =
+                println(databaseValue).let { Json.parse(starSetListSerializer, databaseValue) }
+        }
     ),
     ephemerisPointAdapter = EphemerisPoint.Adapter(
         solarDateAdapter = object : ColumnAdapter<SolarDate, Long> {
@@ -172,4 +137,36 @@ object Db {
     }
 }
 
-//expect fun Db.loadChart(dob: DateTime) : Chart
+expect fun loadChart(dob: DateTime): Chart
+
+object ChartData {
+    fun loadMyChartRecords() = Db.instance.chartRecordQueries.mine().executeAsList()
+    fun searchChartRecords(search: String) = Db.instance.chartRecordQueries.search("%$search%").executeAsList()
+//    fun createChartRecord(name: String, dob: DateTime, yearPillar: Pillar, monthPillar: Pillar, dayPillar: Pillar, hourPillar: Pillar) =
+//            Db.instance.chartRecordQueries.insertOne(SolarDate())
+
+    fun getEphemerisPoint(solarDate: SolarDate) =
+        Db.instance.ephemerisPointQueries.getBySolarDate(solarDate).executeAsOne()
+
+    fun getCommentsForPalace(chart: Chart, palace: Palace): Map<Star, List<StarComment>> =
+        chart.houses.getValue(palace).let { stars ->
+            stars.map { star ->
+                star to Db.instance.starCommentQueries.getByPalace(star, palace).executeAsList().filter { starComment ->
+                    starComment.inHouseWith.all { it.intersect(stars).isNotEmpty() }
+                }
+            }.toMap()
+        }
+
+//    fun findCommentsForStarPalace(palace: Palace, stars: List<Star>)
+//            = stars.map { star ->
+//        Db.instance.starCommentQueries.getByPalace(star, palace).executeAsList().filter { starComment ->
+//            starComment.inHouseWith.all { it.intersect(stars).isNotEmpty() }
+//        }
+//    }.flatten()
+//
+//    fun findCommentsForStarPalace(chartHouse: Map.Entry<House, List<Star>>)
+//            = findCommentsForStarPalace(chartHouse.key.palace, chartHouse.value).sortedBy {
+//        it.star.Rank
+//    }
+
+}

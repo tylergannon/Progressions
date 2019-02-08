@@ -3,19 +3,19 @@ package com.meowbox.progressions.db
 import android.content.Context
 import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
-import com.meowbox.fourpillars.Ephemeris
+import com.meowbox.DateTime
+import com.meowbox.fourpillars.Branch
+import com.meowbox.fourpillars.Pillar
+import com.meowbox.fourpillars.Stem
 import com.meowbox.progressions.Database
 import com.squareup.sqldelight.android.AndroidSqliteDriver
-import org.joda.time.LocalDate
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.io.File
 import kotlin.test.assertEquals
-
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -33,7 +33,6 @@ class LunarDateTest {
 
     @Before
     fun setup() {
-        println("Setup database")
         context = InstrumentationRegistry.getInstrumentation().context
         loadDatabase(context!!, dbName)
         Db.dbSetup(AndroidSqliteDriver(Database.Schema, context!!, dbName))
@@ -45,36 +44,34 @@ class LunarDateTest {
     }
 
     @Test
-    fun solarDateCalibration() {
-        val initialDate = SolarDate(LocalDate(1900, 1, 1))
-        var ephemeris = Ephemeris(File("./src/main/res/raw/ephemeris").inputStream())
+    fun testTpgBirthday() {
+        val birthday = DateTime(1978, 4, 7, 15, 30)
+        val ephemerisPoint = Db.instance.ephemerisPointQueries.getBySolarDate(birthday.toSolarDate()).executeAsOne()
+        assertEquals(Pillar(Stem.YangEarth, Branch.Horse), ephemerisPoint.lunarDate.yearPillar)
+        assertEquals(Pillar(Stem.YangFire, Branch.Dragon), ephemerisPoint.lunarDate.monthPillar)
+        assertEquals(Pillar(Stem.YinEarth, Branch.Pig), ephemerisPoint.dayPillar)
+        assertEquals(Pillar(Stem.YangWater, Branch.Monkey), ephemerisPoint.hourPillar(Branch.Monkey))
+    }
 
-        fun testDate(d: LocalDate) {
-            Db.instance.ephemerisPointQueries.getBySolarDate(SolarDate(d)).executeAsOne().also { actual ->
-                val expected = ephemeris.lunarDate(d)
-                assertEquals(
-                    expected.yearInEpoch.toInt(), actual.lunarDate.yearInEpoch,
-                    "Year for ${d.year}-${d.monthOfYear}-${d.dayOfMonth} should be ${expected.yearInEpoch}"
-                )
-                assertEquals(
-                    expected.dayOfMonth.toInt(), actual.lunarDate.dayOfMonth,
-                    "Day of month for ${d.year}-${d.monthOfYear}-${d.dayOfMonth} should be ${expected.dayOfMonth}"
-                )
-                assertEquals(
-                    expected.monthPillar, actual.lunarDate.monthPillar,
-                    "MonthPillar for ${d.year}-${d.monthOfYear}-${d.dayOfMonth} should be ${expected.monthPillar}"
-                )
-                assertEquals(
-                    expected.dayPillar, actual.dayPillar,
-                    "DayPillar for ${d.year}-${d.monthOfYear}-${d.dayOfMonth} should be ${expected.dayPillar}"
-                )
-            }
-        }
+    @Test
+    fun verifyPillarsFor_Jun_18_1982() {
+        val vanessaBirthday = loadChart(DateTime(1982, 6, 18, 15, 0))
+        assertEquals(27, vanessaBirthday.dayOfMonth)
+        assertEquals(Pillar(Stem.YangWater, Branch.Dog), vanessaBirthday.yearPillar)
+        assertEquals(Pillar(Stem.YinWood, Branch.Snake), vanessaBirthday.monthPillar)
+        assertEquals(Pillar(Stem.YangWater, Branch.Monkey), vanessaBirthday.dayPillar)
+        assertEquals(Pillar(Stem.YangEarth, Branch.Monkey), vanessaBirthday.hourPillar)
+
+    }
 
 
-        assertEquals(0, initialDate.id)
-
-        testDate(LocalDate(1900, 1, 1))
-        testDate(LocalDate(1978, 4, 7))
+    @Test
+    fun testTpgChartComments() {
+        val birthday = DateTime(1978, 4, 7, 15, 30)
+        val chart = loadChart(birthday)
+        assertEquals(Pillar(Stem.YangEarth, Branch.Horse), chart.yearPillar)
+        assertEquals(Pillar(Stem.YangFire, Branch.Dragon), chart.monthPillar)
+        assertEquals(Pillar(Stem.YinEarth, Branch.Pig), chart.dayPillar)
+        assertEquals(Pillar(Stem.YangWater, Branch.Monkey), chart.hourPillar)
     }
 }

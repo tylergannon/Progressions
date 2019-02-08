@@ -1,7 +1,9 @@
 package com.meowbox.progressions.db
 
 import android.content.Context
+import com.meowbox.DateTime
 import com.meowbox.fourpillars.Branch
+import com.meowbox.fourpillars.Chart
 import com.meowbox.fourpillars.Pillar
 import com.meowbox.fourpillars.Stem
 import com.meowbox.progressions.EphemerisPoint
@@ -33,6 +35,22 @@ private fun File.createRecursive(block: ((File) -> Unit)? = null) {
         block(this)
 }
 
+fun DateTime.toSolarDate() = SolarDate(toLocalDateTime().toLocalDate())
+val EphemerisPoint.yearPillar get() = lunarDate.yearPillar
+val EphemerisPoint.monthPillar get() = lunarDate.monthPillar
+
+actual fun loadChart(dob: DateTime): Chart = dob.toLocalDateTime().plusHours(1).let { localDateTime ->
+    Db.instance.ephemerisPointQueries.getBySolarDate(SolarDate(localDateTime.toLocalDate())).executeAsOne()
+        .let { ephemerisPoint: EphemerisPoint ->
+            Chart(
+                ephemerisPoint.yearPillar,
+                ephemerisPoint.monthPillar,
+                ephemerisPoint.dayPillar,
+                ephemerisPoint.hourPillar(Branch.num(localDateTime.hourOfDay / 2)),
+                ephemerisPoint.lunarDate.dayOfMonth
+            )
+        }
+}
 
 fun loadDatabase(context: Context, dbName: String) =
     File(context.getDatabasePath(dbName).toURI()).createRecursive { file ->
@@ -53,12 +71,12 @@ fun loadDatabase(context: Context, dbName: String) =
 
 fun DateTime.toLocalDateTime() = LocalDateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour)
 
-//actual fun Db.loadChart(dob: DateTime): Chart {
+//actual fun Db.loadChart(dob: DateTime): loadChart {
 //    val adjustedDob = dob.toLocalDateTime().plusHours(1)
 //    val ephemerisPoint = instance.ephemerisPointQueries.getBySolarDate(
 //        SolarDate(adjustedDob.toLocalDate())
 //    ).executeAsOne()
-//    return Chart(ephemerisPoint.lunarDate.yearPillar, ephemerisPoint.lunarDate.monthPillar,
+//    return loadChart(ephemerisPoint.lunarDate.yearPillar, ephemerisPoint.lunarDate.monthPillar,
 //        ephemerisPoint.dayPillar, ephemerisPoint.hourPillar(Branch.num(adjustedDob.hourOfDay / 2)),
 //        ephemerisPoint.lunarDate.dayOfMonth)
 //}

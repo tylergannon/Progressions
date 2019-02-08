@@ -115,7 +115,6 @@ kotlin {
                 implementation 'joda-time:joda-time:2.10.1'
                 implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.10.0'
                 implementation "com.squareup.sqldelight:android-driver:1.0.3"
-                implementation "org.apache.commons:commons-csv:1.6"
             }
         }
 //        iosMain {
