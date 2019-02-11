@@ -2,16 +2,14 @@ package com.meowbox.progressions.db
 
 import com.meowbox.DateTime
 import com.meowbox.fourpillars.*
-import com.meowbox.progressions.ChartRecord
-import com.meowbox.progressions.Database
-import com.meowbox.progressions.EphemerisPoint
-import com.meowbox.progressions.StarComment
+import com.meowbox.progressions.*
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
-import kotlinx.serialization.*
 import kotlinx.serialization.internal.EnumSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.list
+import kotlinx.serialization.set
 
 inline class SolarDate(val id: Int)
 
@@ -42,12 +40,6 @@ inline class LunarDate(val id: Short) {
         private const val dayOfMonthBit: Short = 1024
         private const val initialDayPillarNum = 10
     }
-}
-
-@UseExperimental(ImplicitReflectionSerializer::class)
-inline fun <reified T : Any> serializedColumnAdapter() = object : ColumnAdapter<T, String> {
-    override fun encode(value: T) = Json.stringify(value)
-    override fun decode(databaseValue: String) = Json.parse<T>(databaseValue)
 }
 
 private val branchListSerializer = EnumSerializer(Branch::class).list
@@ -118,6 +110,8 @@ fun createQueryWrapper(driver: SqlDriver) = Database(
 object Db {
     private var driverRef: SqlDriver? = null
     private var dbRef: Database? = null
+
+    const val databaseName: String = "progressions.sqlite3"
 
     val ready: Boolean get() = dbRef != null
     val instance: Database get() = dbRef!!

@@ -27,7 +27,8 @@ class LunarDateTest {
 
     var context: Context? = null
 
-    @Test fun boopSauce() {
+    @Test
+    fun there_ShouldBe_73018_EphemerisPoints_InDatabase() {
         assertEquals(73018, Db.instance.ephemerisPointQueries.count().executeAsOne().toInt())
     }
 

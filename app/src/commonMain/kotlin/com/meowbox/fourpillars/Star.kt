@@ -1,9 +1,20 @@
 package com.meowbox.fourpillars
 
-enum class Star(val pinyin: String, val english: String, val description: String, val Rank: Int) {
-    ZiWei("Zi Wei", "Emperor", "The Center, ruler of all, Yang Power", 1) {
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(ziweiBranches[chartParameters.dayOfMonth - 1][chartParameters.innerElement.ordinal])
+enum class Star(
+    val pinyin: String,
+    val english: String,
+    val description: String,
+    val Rank: Int,
+    val exalted: Array<Branch> = arrayOf(),
+    val debilitated: Array<Branch> = arrayOf()
+) {
+    ZiWei(
+        "Zi Wei", "Emperor", "The Center, ruler of all, Yang Power", 1,
+        exalted = arrayOf(Branch.Dragon, Branch.Horse),
+        debilitated = arrayOf(Branch.Rooster, Branch.Rabbit)
+    ) {
+        override fun findIn(chart: Chart) =
+            Branch.num(ziweiBranches[chart.dayOfMonth - 1][chart.innerElement.ordinal])
 
         private val ziweiBranches = arrayOf(
             arrayOf(4, 9, 6, 11, 1), arrayOf(1, 6, 11, 4, 2), arrayOf(2, 11, 4, 1, 2),
@@ -16,55 +27,114 @@ enum class Star(val pinyin: String, val english: String, val description: String
             arrayOf(1, 8, 9, 8, 3), arrayOf(10, 5, 6, 6, 3), arrayOf(11, 6, 7, 11, 4)
         )
     },
-    TianFu("Tian Fu", "Empress", "Primary access to everything, Yin power", 1) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.Dragon - ZiWei.findIn(chartParameters).ordinal
+    TianFu(
+        "Tian Fu", "Empress", "Primary access to everything, Yin power", 1,
+        exalted = arrayOf(Branch.Ox, Branch.Goat),
+        debilitated = arrayOf(Branch.Horse, Branch.Rooster)
+    ) {
+        override fun findIn(chart: Chart) = Branch.Dragon - ZiWei.findIn(chart).ordinal
     },
-    TianJi("Tian Ji", "Oracle", "Intuition, unusual knowledge", 1) {
-        override fun findIn(chartParameters: ChartParameters) = ZiWei.findIn(chartParameters) - 1
+    TianJi(
+        "Tian Ji", "Oracle", "Intuition, unusual knowledge", 1,
+        exalted = arrayOf(Branch.Rat, Branch.Horse),
+        debilitated = arrayOf(Branch.Tiger, Branch.Ox)
+    ) {
+        override fun findIn(chart: Chart) = ZiWei.findIn(chart) - 1
     },
-    TaiYang("Tai Yang", "Sun", "Prince, possibility to take it all", 2) {
-        override fun findIn(chartParameters: ChartParameters) = ZiWei.findIn(chartParameters) - 3
+    TaiYang(
+        "Tai Yang", "Sun", "Prince, possibility to take it all", 2,
+        exalted = arrayOf(Branch.Dragon, Branch.Rabbit, Branch.Horse, Branch.Snake),
+        debilitated = arrayOf(Branch.Rat)
+    ) {
+        override fun findIn(chart: Chart) = ZiWei.findIn(chart) - 3
     },
-    WuQu("Wu Qu", "General", "The 'old man' and advisor in tactics", 2) {
-        override fun findIn(chartParameters: ChartParameters) = ZiWei.findIn(chartParameters) - 4
+    WuQu(
+        "Wu Qu", "General", "The 'old man' and advisor in tactics", 2,
+        exalted = arrayOf(Branch.Ox),
+        debilitated = arrayOf(Branch.Snake)
+    ) {
+        override fun findIn(chart: Chart) = ZiWei.findIn(chart) - 4
     },
-    TianTong("Tian Tong", "Vassal", "Power from supporting the leader", 3) {
-        override fun findIn(chartParameters: ChartParameters) = ZiWei.findIn(chartParameters) - 5
+    TianTong(
+        "Tian Tong", "Vassal", "Power from supporting the leader", 3,
+        exalted = arrayOf(Branch.Rat),
+        debilitated = arrayOf(Branch.Monkey)
+    ) {
+        override fun findIn(chart: Chart) = ZiWei.findIn(chart) - 5
     },
-    LianZhen("Lian Zhen", "Concubine", "Chastity, close to power if beautiful", 4) {
-        override fun findIn(chartParameters: ChartParameters) = ZiWei.findIn(chartParameters) + 4
+    LianZhen(
+        "Lian Zhen", "Concubine", "Chastity, close to power if beautiful", 4,
+        exalted = arrayOf(Branch.Monkey, Branch.Dog),
+        debilitated = arrayOf(Branch.Rabbit, Branch.Snake, Branch.Rooster, Branch.Pig)
+    ) {
+        override fun findIn(chart: Chart) = ZiWei.findIn(chart) + 4
     },
-    TianXiang("Tian Xiang", "Tutor", "Power behind throne, access to knowledge", 1) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) + 4
+    TianXiang(
+        "Tian Xiang", "Tutor", "Power behind throne, access to knowledge", 1,
+        exalted = arrayOf(Branch.Ox),
+        debilitated = arrayOf(Branch.Rat, Branch.Rooster)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) + 4
     },
-    TaiYin("Tai Yin", "Moon", "Princess, the link to other realms", 2) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) + 1
+    TaiYin(
+        "Tai Yin", "Moon", "Princess, the link to other realms", 2,
+        exalted = arrayOf(Branch.Rat, Branch.Rooster, Branch.Dog, Branch.Pig),
+        debilitated = arrayOf(Branch.Tiger, Branch.Dragon, Branch.Horse)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) + 1
     },
-    JuMen("Ju Men", "Great Gate", "Availability of anything", 2) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) + 3
+    JuMen(
+        "Ju Men", "Great Gate", "Availability of anything", 2,
+        exalted = arrayOf(Branch.Rat, Branch.Rabbit, Branch.Horse),
+        debilitated = arrayOf(Branch.Ox, Branch.Snake, Branch.Dog)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) + 3
     },
-    TianLiang("Tian Liang", "Roof Beam", "'Feng Shui', feelings of place", 3) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) + 5
+    TianLiang(
+        "Tian Liang", "Roof Beam", "'Feng Shui', feelings of place", 3,
+        exalted = arrayOf(Branch.Rat, Branch.Rabbit, Branch.Horse),
+        debilitated = arrayOf(Branch.Snake, Branch.Goat, Branch.Rooster)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) + 5
     },
-    TanLang("Tan Lang", "Greedy Wolf", "Devourer, takes all", 4) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) + 2
+    TanLang(
+        "Tan Lang", "Greedy Wolf", "Devourer, takes all", 4,
+        exalted = arrayOf(Branch.Rat, Branch.Dragon, Branch.Horse),
+        debilitated = arrayOf(Branch.Snake, Branch.Pig)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) + 2
     },
-    QiSha("Qi Sha", "7 Killings", "Death, ruin, bad luck", 4) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters).diametric
+    QiSha(
+        "Qi Sha", "7 Killings", "Death, ruin, bad luck", 4,
+        exalted = arrayOf(), debilitated = arrayOf()
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart).diametric
     },
-    PoJun("Po Jun", "Rebel", "The one who causes trouble", 4) {
-        override fun findIn(chartParameters: ChartParameters) = TianFu.findIn(chartParameters) - 2
+    PoJun(
+        "Po Jun", "Rebel", "The one who causes trouble", 4,
+        exalted = arrayOf(Branch.Horse, Branch.Dog),
+        debilitated = arrayOf(Branch.Tiger, Branch.Rabbit, Branch.Monkey, Branch.Rooster)
+    ) {
+        override fun findIn(chart: Chart) = TianFu.findIn(chart) - 2
     },
     //    Based on Hour Branch
-    WenChang("Wen Chang", "Magistrate", "The judge, rule of law", 3) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.Dog - chartParameters.hourPillar.branch.ordinal
+    WenChang(
+        "Wen Chang", "Magistrate", "The judge, rule of law", 3,
+        exalted = arrayOf(Branch.Dragon, Branch.Monkey),
+        debilitated = arrayOf()
+    ) {
+        override fun findIn(chart: Chart) = Branch.Dog - chart.hourPillar.branch.ordinal
     },
-    WenQu("Wen Qu", "Priest", "Access to the divine, rituals", 3) {
-        override fun findIn(chartParameters: ChartParameters) = chartParameters.hourPillar.branch + 4
+    WenQu(
+        "Wen Qu", "Priest", "Access to the divine, rituals", 3,
+        exalted = arrayOf(Branch.Dragon, Branch.Monkey),
+        debilitated = arrayOf()
+    ) {
+        override fun findIn(chart: Chart) = chart.hourPillar.branch + 4
     },
     HuoXing("Huo Xing", "Fire Star", "", 5) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.num(
-            branchLookup[chartParameters.hourPillar.branch.ordinal][chartParameters.yearPillar.branch.ordinal]
+        override fun findIn(chart: Chart) = Branch.num(
+            branchLookup[chart.hourPillar.branch.ordinal][chart.yearPillar.branch.ordinal]
         )
 
         private val branchLookup = arrayOf(
@@ -78,8 +148,8 @@ enum class Star(val pinyin: String, val english: String, val description: String
 
     },
     LingXing("Ling Xing", "Water Star", "", 5) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.num(
-            branchLookup[chartParameters.hourPillar.branch.ordinal][chartParameters.yearPillar.branch.ordinal]
+        override fun findIn(chart: Chart) = Branch.num(
+            branchLookup[chart.hourPillar.branch.ordinal][chart.yearPillar.branch.ordinal]
         )
 
         private val branchLookup = arrayOf(
@@ -94,55 +164,55 @@ enum class Star(val pinyin: String, val english: String, val description: String
     YangRen("Yang Ren", "Goat Blade", "Injuries, but also competition", 5) {
         private val branchLookup = arrayOf(3, 4, 6, 7, 6, 7, 9, 10, 0, 1)
 
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(branchLookup[chartParameters.yearPillar.stem.ordinal])
+        override fun findIn(chart: Chart) =
+            Branch.num(branchLookup[chart.yearPillar.stem.ordinal])
     },
     TuoLuo("Tuo Luo", "Hump Back", "", 5) {
         private val branchLookup = arrayOf(1, 2, 4, 5, 4, 5, 7, 8, 10, 11)
 
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(branchLookup[chartParameters.yearPillar.stem.ordinal])
+        override fun findIn(chart: Chart) =
+            Branch.num(branchLookup[chart.yearPillar.stem.ordinal])
     },
     YouBi("You Bi", "Right Assistant", "", 6) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.Rat - chartParameters.monthPillar.branch.ordinal
+        override fun findIn(chart: Chart) = Branch.Rat - chart.monthPillar.branch.ordinal
     },
     ZuoFu("Zuo Fu", "Left Assistant", "", 6) {
-        override fun findIn(chartParameters: ChartParameters) = chartParameters.monthPillar.branch + 2
+        override fun findIn(chart: Chart) = chart.monthPillar.branch + 2
     },
     TianCun("Tian Cun", "Storehouse", "", 6) {
         private val branchLookup = arrayOf(2, 3, 5, 6, 5, 6, 8, 9, 11, 0)
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(branchLookup[chartParameters.yearPillar.stem.ordinal])
+        override fun findIn(chart: Chart) =
+            Branch.num(branchLookup[chart.yearPillar.stem.ordinal])
     },
     TianYao("Tian Yao", "Beauty", "", 6) {
-        override fun findIn(chartParameters: ChartParameters) = chartParameters.monthPillar.branch - 1
+        override fun findIn(chart: Chart) = chart.monthPillar.branch - 1
     },
     TianKui("Tian Kui", "Leader", "", 7) {
         private val branchLookup = arrayOf(1, 0, 11, 9, 7, 8, 7, 6, 5, 3)
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(branchLookup[chartParameters.yearPillar.stem.ordinal])
+        override fun findIn(chart: Chart) =
+            Branch.num(branchLookup[chart.yearPillar.stem.ordinal])
     },
     TianXi("Tian Xi", "Happiness", "", 7) {
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.Rooster - chartParameters.yearPillar.branch.ordinal
+        override fun findIn(chart: Chart) =
+            Branch.Rooster - chart.yearPillar.branch.ordinal
     },
     DiGong("Di Gong", "Void", "", 7) {
-        override fun findIn(chartParameters: ChartParameters) = Branch.Pig - chartParameters.hourPillar.branch.ordinal
+        override fun findIn(chart: Chart) = Branch.Pig - chart.hourPillar.branch.ordinal
     },
     TianYue("Tian Yue", "Halberd", "", 7) {
         private val branchLookup = arrayOf(7, 8, 9, 11, 1, 0, 1, 2, 3, 5)
 
-        override fun findIn(chartParameters: ChartParameters) =
-            Branch.num(branchLookup[chartParameters.yearPillar.stem.ordinal])
+        override fun findIn(chart: Chart) =
+            Branch.num(branchLookup[chart.yearPillar.stem.ordinal])
     },
     TianXing("Tian Xing", "Punishment", "", 7) {
-        override fun findIn(chartParameters: ChartParameters) = chartParameters.monthPillar.branch + 7
+        override fun findIn(chart: Chart) = chart.monthPillar.branch + 7
     },
     DiJie("Di Jie", "Loss", "", 7) {
-        override fun findIn(chartParameters: ChartParameters) = chartParameters.hourPillar.branch - 1
+        override fun findIn(chart: Chart) = chart.hourPillar.branch - 1
     };
 
-    abstract fun findIn(chartParameters: ChartParameters): Branch
+    abstract fun findIn(chart: Chart): Branch
 
     companion object {
         val all = Star.values()

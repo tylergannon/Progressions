@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        loadDatabase(applicationContext, "progressions.sqlite3")
-        Db.dbSetup(AndroidSqliteDriver(Database.Schema, applicationContext, "progressions.sqlite3"))
+        loadDatabase(applicationContext, Db.databaseName)
+        Db.dbSetup(AndroidSqliteDriver(Database.Schema, applicationContext, Db.databaseName))
         dorthBurgle.text = loadChart(DateTime(1978, 4, 7, 15, 30)).dayPillar.branch.name
     }
 }

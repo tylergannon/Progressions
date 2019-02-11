@@ -1,8 +1,8 @@
 import kotlin.collections.List;
 import kotlin.collections.Set;
 import com.meowbox.fourpillars.Star;
-import com.meowbox.fourpillars.StarComment;
-import com.meowbox.fourpillars.Auspices;
+import com.meowbox.progressions.StarComment;
+import com.meowbox.progressions.Auspices;
 import com.meowbox.fourpillars.Palace;
 import com.meowbox.fourpillars.Branch;
 

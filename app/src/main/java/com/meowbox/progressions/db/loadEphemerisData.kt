@@ -8,6 +8,8 @@ import com.meowbox.fourpillars.Pillar
 import com.meowbox.fourpillars.Stem
 import com.meowbox.progressions.EphemerisPoint
 import com.meowbox.progressions.R
+import com.meowbox.progressions.monthPillar
+import com.meowbox.progressions.yearPillar
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
@@ -24,20 +26,9 @@ fun SolarDate(date: LocalDate) = SolarDate(Days.daysBetween(startDate, date).day
 fun SolarDate.toLocalDate() = startDate.plusDays(id)
 
 private val startDate = LocalDate(1900, 1, 1)
-private const val initialDayPillarNum = 10
 
-
-private fun File.createRecursive(block: ((File) -> Unit)? = null) {
-    if (!parentFile.exists())
-        parentFile.mkdirs()
-
-    if (createNewFile() && block != null)
-        block(this)
-}
-
+fun DateTime.toLocalDateTime() = LocalDateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour)
 fun DateTime.toSolarDate() = SolarDate(toLocalDateTime().toLocalDate())
-val EphemerisPoint.yearPillar get() = lunarDate.yearPillar
-val EphemerisPoint.monthPillar get() = lunarDate.monthPillar
 
 actual fun loadChart(dob: DateTime): Chart = dob.toLocalDateTime().plusHours(1).let { localDateTime ->
     Db.instance.ephemerisPointQueries.getBySolarDate(SolarDate(localDateTime.toLocalDate())).executeAsOne()
@@ -52,6 +43,10 @@ actual fun loadChart(dob: DateTime): Chart = dob.toLocalDateTime().plusHours(1).
         }
 }
 
+
+/************************************************************************
+ * Called from MainActivity.
+ */
 fun loadDatabase(context: Context, dbName: String) =
     File(context.getDatabasePath(dbName).toURI()).createRecursive { file ->
         ZipInputStream(context.resources.openRawResource(R.raw.ephemerisdb)).also { zip ->
@@ -68,15 +63,14 @@ fun loadDatabase(context: Context, dbName: String) =
         }
     }
 
+/************************************************************************
+ * Used only by loadDatabase() for creating the empty database file
+ *      during initialization.
+ */
+private inline fun File.createRecursive(noinline block: ((File) -> Unit)? = null) {
+    if (!parentFile.exists())
+        parentFile.mkdirs()
 
-fun DateTime.toLocalDateTime() = LocalDateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour)
-
-//actual fun Db.loadChart(dob: DateTime): loadChart {
-//    val adjustedDob = dob.toLocalDateTime().plusHours(1)
-//    val ephemerisPoint = instance.ephemerisPointQueries.getBySolarDate(
-//        SolarDate(adjustedDob.toLocalDate())
-//    ).executeAsOne()
-//    return loadChart(ephemerisPoint.lunarDate.yearPillar, ephemerisPoint.lunarDate.monthPillar,
-//        ephemerisPoint.dayPillar, ephemerisPoint.hourPillar(Branch.num(adjustedDob.hourOfDay / 2)),
-//        ephemerisPoint.lunarDate.dayOfMonth)
-//}
+    if (createNewFile() && block != null)
+        block(this)
+}

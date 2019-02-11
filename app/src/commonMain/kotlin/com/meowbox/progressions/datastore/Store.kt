@@ -13,13 +13,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.rekotlin.*
 
-//data class SearchState(
-//    val searchString: String? = null,
-//    val showSearch: Boolean = false,
-//    val searchResults: List<ChartRecord> = listOf()
-//)
-
-
 data class ProgressionsAppState(
     val currentChart: CurrentChart.State? = null,
     val newChart: NewChart.State = NewChart.State(),
@@ -160,7 +153,7 @@ object AsyncActions {
 
 
     fun loadSelectCurrentChartAction(chartRecord: ChartRecord): AsyncActionCreator<ProgressionsAppState, Store<ProgressionsAppState>> =
-        { state, _, callback ->
+        { _, _, callback ->
             GlobalScope.launch {
                 callback { _, _ ->
                     CurrentChart.SelectCurrentChartAction(chartRecord, loadChart(chartRecord.dob))
