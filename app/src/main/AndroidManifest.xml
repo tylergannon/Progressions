@@ -3,16 +3,33 @@
           package="com.meowbox.progressions">
 
     <application
+            android:name=".AppController"
             android:allowBackup="true"
             android:label="@string/app_name"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <!--<activity android:name=".MainActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+
+        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+        <activity android:name=".controllers.NewChartActivity">
+        </activity>
+        <activity
+                android:name=".controllers.ChartListActivity"
+                android:label="@string/title_activity_chart_list"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".controllers.ViewChartActivity">
+        </activity>
+        <activity android:name=".controllers.ChartHouseDetailActivity">
         </activity>
     </application>
 

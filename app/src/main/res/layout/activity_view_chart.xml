@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.meowbox.progressions.controllers.ViewChartActivity">
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+            android:onClick="clickSnake"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Snake"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/house_snake"/>
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Horse"
+            android:onClick="clickHorse"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/house_snake"
+            android:id="@+id/house_horse"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Goat"
+            android:onClick="clickGoat"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/house_horse"
+            android:id="@+id/house_goat"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Monkey"
+            android:onClick="clickMonkey"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/house_goat"
+            android:id="@+id/house_monkey"/>
+
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Rooster"
+            android:onClick="clickRooster"
+            app:layout_constraintTop_toBottomOf="@id/house_monkey"
+            app:layout_constraintEnd_toEndOf="@id/house_monkey"
+            android:id="@+id/house_rooster"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Dog"
+            android:onClick="clickDog"
+            app:layout_constraintTop_toBottomOf="@id/house_rooster"
+            app:layout_constraintEnd_toEndOf="@id/house_rooster"
+            android:id="@+id/house_dog"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Pig"
+            android:onClick="clickPig"
+            app:layout_constraintTop_toBottomOf="@id/house_dog"
+            app:layout_constraintEnd_toEndOf="@id/house_dog"
+            android:id="@+id/house_pig"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Rat"
+            android:onClick="clickRat"
+            app:layout_constraintTop_toTopOf="@id/house_pig"
+            app:layout_constraintEnd_toStartOf="@id/house_pig"
+            android:id="@+id/house_rat"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Ox"
+            android:onClick="clickOx"
+            app:layout_constraintTop_toTopOf="@id/house_rat"
+            app:layout_constraintEnd_toStartOf="@id/house_rat"
+            android:id="@+id/house_ox"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Tiger"
+            android:onClick="clickTiger"
+            app:layout_constraintTop_toTopOf="@id/house_ox"
+            app:layout_constraintEnd_toStartOf="@id/house_ox"
+            android:id="@+id/house_tiger"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Dragon"
+            android:onClick="clickDragon"
+            app:layout_constraintTop_toBottomOf="@id/house_snake"
+            app:layout_constraintStart_toStartOf="@id/house_snake"
+            android:id="@+id/house_dragon"/>
+
+    <com.meowbox.progressions.views.ChartHouseView
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintHeight_percent="0.25"
+
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:branch="Rabbit"
+            android:onClick="clickRabbit"
+            app:layout_constraintTop_toBottomOf="@id/house_dragon"
+            app:layout_constraintStart_toStartOf="@id/house_dragon"
+            android:id="@+id/house_rabbit"/>
+
+
+</android.support.constraint.ConstraintLayout>
+
+        <!--<?xml version="1.0" encoding="utf-8"?>-->
+        <!--<android.support.constraint.ConstraintLayout-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:tools="http://schemas.android.com/tools"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:context=".ShowChartActivity" android:id="@+id/layout_chart_parent">-->
+
+
+        <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:orientation="vertical"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="368dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="495dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/layout_chart_house_snake_stars" android:layout_marginTop="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.0">&ndash;&gt;-->
+        <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+        <!--</android.support.constraint.ConstraintLayout>-->
