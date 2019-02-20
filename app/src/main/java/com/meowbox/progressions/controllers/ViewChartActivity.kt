@@ -51,6 +51,7 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
 
     override fun newState(state: CurrentChart.State) {
         personName_TextView.text = state.chartRecord.name
+        title = state.chartRecord.name
         dob_TextView.text = state.chartRecord.dob.toString()
 
         yearStem_TextView.text = state.chart.yearPillar.stem.element.name
@@ -75,7 +76,7 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
 
 
 //        this.actionBar.title = "Your Mom"
-        this.title = "Buck wild"
+//        this.title = "Buck wild"
 
 
 
