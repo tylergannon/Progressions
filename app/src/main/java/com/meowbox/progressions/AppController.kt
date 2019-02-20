@@ -18,6 +18,7 @@ import org.rekotlin.Reducer
 import org.rekotlin.Store
 import org.rekotlinrouter.NavigationReducer
 import org.rekotlinrouter.Router
+import org.rekotlinrouter.SetRouteAction
 
 typealias ComponentReducer = (Action, ApplicationState) -> ApplicationState
 
@@ -34,7 +35,13 @@ private val applicationReducer: Reducer<ApplicationState> = { action, oldState -
             search = Search.reducer(action, search),
             newChart = NewChart.reducer(action, newChart)
         )
-    }.also { if (action is CurrentChart.SelectCurrentChartAction) Log.i("Reducer", "$it") }
+    }.also {
+        when (action) {
+            is CurrentChart.SelectCurrentChartAction -> Log.i("Reducer", "$it")
+            is SetRouteAction -> Log.i("NavigationReducer", "${it.navigationState}")
+            is NewChart.InsertChartRecordAction -> Log.i("Reducer", "Charts: ${it.search.searchResults}")
+        }
+    }
 }
 
 

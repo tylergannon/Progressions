@@ -29,7 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.ViewChartActivity">
+        <activity android:name=".controllers.ViewChartActivity"
+                  android:parentActivityName=".controllers.ChartListActivity">
         </activity>
         <activity android:name=".controllers.ChartHouseDetailActivity">
         </activity>

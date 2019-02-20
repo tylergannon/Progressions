@@ -1,5 +1,6 @@
 package com.meowbox.progressions.datastore
 
+import android.util.Log
 import com.meowbox.progressions.ChartRecord
 import org.rekotlin.Action
 
@@ -29,7 +30,9 @@ class Search {
                 )
                 is ClearSearchAction -> state.copy(searchString = "")
                 is NewChart.InsertChartRecordAction ->
-                    state.copy(searchResults = state.searchResults.plus(action.chartRecord))
+                    state.copy(searchResults = state.searchResults.plus(action.chartRecord)).also {
+                        Log.d(javaClass.simpleName, "Added ${action.chartRecord}")
+                    }
                 else -> state
             }
     }

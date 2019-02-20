@@ -3,6 +3,7 @@ package com.meowbox.progressions.controllers
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.meowbox.progressions.ChartRecord
 import com.meowbox.progressions.R
+import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.Search
 import com.meowbox.progressions.datastore.route
+import com.meowbox.progressions.db.loadChart
 import com.meowbox.progressions.routes.ChartListRoutable
 import com.meowbox.progressions.routes.NewChartRoutable
 import com.meowbox.progressions.routes.ViewChartRoutable
@@ -24,9 +27,20 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
     private var chartList: List<ChartRecord> = emptyList()
     private val listViewAdapter: ChartListAdapter = ChartListAdapter()
 
+    fun onClickItem(view: View) {
+        val chartRecord = (view.tag as ViewHolder).chartRecord
+        store.dispatch(CurrentChart.SelectCurrentChartAction(chartRecord, loadChart(chartRecord.dob)))
+        store.route(ChartListRoutable.id, ViewChartRoutable.id)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chart_list)
+
+        chart_list_view.isClickable = true
+        chart_list_view.setOnItemClickListener { parent, view, position, id ->
+            onClickItem(view)
+        }
 
         setSupportActionBar(toolbar)
 
@@ -35,13 +49,9 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
         }
 
         store.subscribe(this) {
-            it.select { state -> state.search }.skipRepeats { old, new ->
-                old.showSearch == new.showSearch &&
-                        old.fetching == new.fetching &&
-                        old.searchString == new.searchString &&
-                        old.searchResults.size == new.searchResults.size
-            }
+            it.select { state -> state.search }.skipRepeats()
         }
+
 
 
         with(chart_list_view) {
@@ -54,10 +64,10 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
 
 
     override fun newState(newState: Search.State) {
-        if (!newState.fetching) {
-            chartList = newState.searchResults
-            listViewAdapter.notifyDataSetChanged()
-        }
+        Log.d(javaClass.simpleName, "$newState")
+        chartList = newState.searchResults
+        listViewAdapter.notifyDataSetChanged()
+//        chart_list_view.adapter = ChartListAdapter()
     }
 
     private fun initRoute() =
@@ -101,13 +111,26 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
          *      ChartRecord object.
          */
         override fun getView(position: Int, existingView: View?, parent: ViewGroup?): View =
-            existingView?.apply { (tag as ViewHolder).chartRecord = chartList[position] }
-                ?: inflateLayout().apply { tag = ViewHolder(this, chartList[position]) }
+            existingView?.apply {
+                (tag as ViewHolder).chartRecord = chartList[position]
+                Log.d(javaClass.simpleName, "The existingView exists... returning $this")
 
-        override fun getItem(position: Int): Any = chartList[position]
+            }
+                ?: inflateLayout().apply {
+                    tag = ViewHolder(this, chartList[position])
+                    Log.d(javaClass.simpleName, "They are calling for this item ${chartList[position]}")
+                }
 
-        override fun getItemId(position: Int) = chartList[position].id.id.toLong()
+        override fun getItem(position: Int): Any = chartList[position].also {
+            Log.d(javaClass.simpleName, "Someone wants item $position.")
+        }
 
-        override fun getCount() = chartList.size
+        override fun getItemId(position: Int) = position.toLong().also {
+            Log.d(javaClass.simpleName, "Someone wants ID for position $position")
+        }
+
+        override fun getCount() = chartList.size.also {
+            Log.d(javaClass.simpleName, "Someone wants to know I have $it items.")
+        }
     }
 }

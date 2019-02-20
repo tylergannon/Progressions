@@ -64,10 +64,19 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
         hourBranch_TextView.text = state.chart.hourPillar.branch.name
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        store.unsubscribe(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_chart)
+
+
+//        this.actionBar.title = "Your Mom"
+        this.title = "Buck wild"
+
 
 
         store.subscribe(this) { subscription ->

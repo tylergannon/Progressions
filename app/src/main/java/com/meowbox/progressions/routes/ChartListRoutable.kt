@@ -51,7 +51,9 @@ class ChartListRoutable(val context: Context) : Routable {
     ): Routable {
         if (routeElementIdentifier == NewChartRoutable.id)
             return RouteHelper.createNewChartRoutable(context)
-        TODO("not implemented, but FROM=$routeElementIdentifier")
+        if (routeElementIdentifier == ViewChartRoutable.id)
+            return RouteHelper.createViewChartRoutable(context)
+        TODO("Unrecognized route routeElementIdentifier=$routeElementIdentifier")
     }
 
     companion object {
