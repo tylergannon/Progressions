@@ -45,6 +45,10 @@ class NewChartActivity : AppCompatActivity(), StoreSubscriber<NewChart.State> {
             store.route(ChartListRoutable.id, NewChartYearRoutable.id)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        store.unsubscribe(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

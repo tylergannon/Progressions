@@ -41,6 +41,8 @@ inline class DateTime(val id: Int) {
         minuteOfHour: Int = this.minuteOfHour
     ) = DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour)
 
+    override fun toString() = "DateTime($year/$monthOfYear/$dayOfMonth $hourOfDay:$minuteOfHour)"
+
     companion object {
         private const val firstYear = 1900
         private const val yearBits = 8

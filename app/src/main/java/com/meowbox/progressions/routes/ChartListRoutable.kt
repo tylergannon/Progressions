@@ -34,7 +34,7 @@ class ChartListRoutable(val context: Context) : Routable {
                 else -> TODO("not implemented, but FROM=$from and TO=$to")
             }
             else -> TODO("not implemented, but FROM=$from and TO=$to")
-        }
+        }.also { Log.i("ChartList/changeSegment", "FROM=$from, TO=$to") }
 
     override fun popRouteSegment(
         routeElementIdentifier: RouteElementIdentifier,

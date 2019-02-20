@@ -23,7 +23,15 @@ class Chart(
         }
 
 
-    val houses = Star.all.groupBy { House(it.findIn(this), progressTo ?: ming) }
+    val houses = Star.all.groupBy { House(it.findIn(this), progressTo ?: ming) }.let { initialMap ->
+        var newMap = initialMap
+        for (branch in Branch.all)
+            with(House(branch, progressTo ?: ming)) {
+                if (!initialMap.containsKey(this))
+                    newMap = newMap.plus(this to emptyList<Star>())
+            }
+        newMap
+    }
 
     class ElementScores {
         class ElementScore(val element: Element) {

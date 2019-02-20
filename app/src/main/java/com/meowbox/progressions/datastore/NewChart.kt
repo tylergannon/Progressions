@@ -2,6 +2,7 @@ package com.meowbox.progressions.datastore
 
 import com.meowbox.DateTime
 import com.meowbox.progressions.ChartRecord
+import org.rekotlin.Action
 
 class NewChart {
     data class State(
@@ -14,7 +15,7 @@ class NewChart {
     }
 
     class ChangeDobAction(val dob: DateTime) : Action {
-        override fun toString() = "ChangeDobAction name=$dob"
+        override fun toString() = "ChangeDobAction val=$dob"
     }
 
     class InsertChartRecordAction(val chartRecord: ChartRecord) : Action

@@ -61,7 +61,6 @@ class NewChartTimeActivity : AppCompatActivity(), StoreSubscriber<NewChart.State
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_chart_time)
@@ -70,5 +69,10 @@ class NewChartTimeActivity : AppCompatActivity(), StoreSubscriber<NewChart.State
         }
 
         next_Button.setOnClickListener(this::save)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        store.unsubscribe(this)
     }
 }

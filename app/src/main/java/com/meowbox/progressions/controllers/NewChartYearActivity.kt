@@ -36,6 +36,11 @@ class NewChartYearActivity : AppCompatActivity(), StoreSubscriber<NewChart.State
         store.dispatch(NewChart.ChangeDobAction(dob = dob))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        store.unsubscribe(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_chart_year)
@@ -43,16 +48,25 @@ class NewChartYearActivity : AppCompatActivity(), StoreSubscriber<NewChart.State
         year_EditText.setOnEditorActionListener { _, actionId, event ->
             true.also {
                 if (actionId == EditorInfo.IME_ACTION_NEXT || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Log.i(this.javaClass.name, "NEXT clicked for ${year_EditText.text}.")
+                    Log.i(
+                        this.javaClass.name,
+                        "NEXT clicked for ${year_EditText.text}.  actionid=$actionId, keycode=${event?.keyCode}"
+                    )
+                    year_EditText.text.toString().apply {
+                        if (length == 4)
+                            storeDob(toInt())
+                    }
+
                     store.route(ChartListRoutable.id, NewChartDobRoutable.id)
                 }
             }
         }
 
-        year_EditText.afterTextChanged { text ->
-            if (text.length == 4)
-                storeDob(text.toInt())
-        }
+
+//        year_EditText.afterTextChanged { text ->
+//            if (text.length == 4)
+//                storeDob(text.toInt())
+//        }
 
 
         store.subscribe(this) { subscription ->

@@ -28,6 +28,8 @@ class Search {
                     searchResults = action.chartRecords
                 )
                 is ClearSearchAction -> state.copy(searchString = "")
+                is NewChart.InsertChartRecordAction ->
+                    state.copy(searchResults = state.searchResults.plus(action.chartRecord))
                 else -> state
             }
     }
