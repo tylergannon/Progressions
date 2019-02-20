@@ -2,7 +2,6 @@ package com.meowbox.progressions.controllers
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import com.meowbox.progressions.routes.ChartListRoutable
 import com.meowbox.progressions.routes.NewChartRoutable
 import com.meowbox.progressions.routes.ViewChartRoutable
 import com.meowbox.progressions.store
-
 import kotlinx.android.synthetic.main.activity_chart_list.*
 import org.rekotlin.StoreSubscriber
 
@@ -33,15 +31,15 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            startNewChartActivity()
         }
 
         store.subscribe(this) {
             it.select { state -> state.search }.skipRepeats { old, new ->
                 old.showSearch == new.showSearch &&
                         old.fetching == new.fetching &&
-                        old.searchString == new.searchString
+                        old.searchString == new.searchString &&
+                        old.searchResults.size == new.searchResults.size
             }
         }
 
@@ -51,6 +49,7 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
         }
 
         initRoute()
+
     }
 
 

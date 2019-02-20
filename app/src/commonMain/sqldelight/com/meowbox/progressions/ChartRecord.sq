@@ -41,6 +41,10 @@ getById:
 SELECT * FROM chartRecord
 WHERE chartRecord.id = ?;
 
+getLast:
+SELECT * FROM chartRecord
+WHERE id = (SELECT max(id) FROM chartRecord);
+
 search:
 SELECT * FROM chartRecord
 WHERE name LIKE ? AND isMine = 1

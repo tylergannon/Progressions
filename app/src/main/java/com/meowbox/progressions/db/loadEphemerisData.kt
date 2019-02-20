@@ -1,6 +1,7 @@
 package com.meowbox.progressions.db
 
 import android.content.Context
+import android.util.Log
 import com.meowbox.DateTime
 import com.meowbox.fourpillars.Branch
 import com.meowbox.fourpillars.Chart
@@ -50,6 +51,7 @@ actual fun loadChart(dob: DateTime): Chart = dob.toLocalDateTime().plusHours(1).
 fun loadDatabase(context: Context, dbName: String) =
     File(context.getDatabasePath(dbName).toURI()).createRecursive { file ->
         ZipInputStream(context.resources.openRawResource(R.raw.ephemerisdb)).also { zip ->
+            Log.w("loadDatabase", "Creating new database.")
             zip.nextEntry
             var len: Int
             val buffer = ByteArray(10000)

@@ -5,7 +5,6 @@ import com.meowbox.fourpillars.Chart
 import com.meowbox.fourpillars.Palace
 import com.meowbox.progressions.ChartRecord
 import com.meowbox.progressions.StarComment
-import org.rekotlin.Action
 
 class CurrentChart {
     data class State(
@@ -16,24 +15,24 @@ class CurrentChart {
         val palaceComments: List<StarComment> = listOf()
     )
 
-    class SelectCurrentChartAction(val chartRecord: ChartRecord, val chart: Chart) : Action
+    class SelectCurrentChartAction(val chartRecord: ChartRecord, val chart: Chart) : Action {
+        override fun toString() = "SelectCurrentChartAction(chartRecord = '$chartRecord', chart = '$chart')"
+    }
     class SelectChartProgression(val progressTo: Branch?) : Action
     class SelectFocusPalaceAction(val palace: Palace) : Action
     class LoadStarCommentsAction(val starComments: List<StarComment>) : Action
 
     companion object {
         fun reducer(action: Action, state: State?) =
-            if (state == null) null
-            else
                 when (action) {
                     is SelectCurrentChartAction ->
                         State(action.chart, action.chartRecord)
                     is SelectChartProgression ->
-                        state.copy(progressedTo = action.progressTo)
+                        state!!.copy(progressedTo = action.progressTo)
                     is SelectFocusPalaceAction ->
-                        state.copy(selectedPalace = action.palace)
+                        state!!.copy(selectedPalace = action.palace)
                     is LoadStarCommentsAction ->
-                        state.copy(palaceComments = action.starComments)
+                        state!!.copy(palaceComments = action.starComments)
                     else -> state
                 }
     }

@@ -42,7 +42,16 @@ class ChartHouseView(context: Context?, attrs: AttributeSet?) : RelativeLayout(c
 
         store.subscribe(this) { subscription ->
             subscription.select { state ->
-                state.currentChart!!.chart.houses.entries.first { it.key.branch == branch }
+                val poop = state.currentChart!!
+                val pop = poop.chart
+                val dorth = pop.houses
+                val kookle = dorth.entries
+                val dorgburgler = kookle.first {
+                    val sniggle = it.key
+                    sniggle.branch == branch
+                }
+                dorgburgler
+//                state.currentChart!!.chart.houses.entries.first { it.key.branch == branch }
             }
         }
     }

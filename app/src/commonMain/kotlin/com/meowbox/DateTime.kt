@@ -35,6 +35,12 @@ inline class DateTime(val id: Int) {
     val minuteOfHour: Int get() = id.rem(dstMultiplier) / minuteMultiplier
     val isDst: Boolean get() = id / dstMultiplier == 1
 
+    fun copy(
+        year: Int = this.year, monthOfYear: Int = this.monthOfYear, dayOfMonth: Int = this.dayOfMonth,
+        hourOfDay: Int = this.hourOfDay,
+        minuteOfHour: Int = this.minuteOfHour
+    ) = DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour)
+
     companion object {
         private const val firstYear = 1900
         private const val yearBits = 8
