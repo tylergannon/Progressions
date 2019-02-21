@@ -5,7 +5,7 @@ import org.rekotlinrouter.Routable
 import org.rekotlinrouter.RouteElementIdentifier
 import org.rekotlinrouter.RoutingCompletionHandler
 
-class ViewChartRoutable(val context: Context) : Routable {
+class ChartHouseDetailRoutable(val context: Context) : Routable {
     override fun changeRouteSegment(
         from: RouteElementIdentifier,
         to: RouteElementIdentifier,
@@ -20,7 +20,7 @@ class ViewChartRoutable(val context: Context) : Routable {
         animated: Boolean,
         completionHandler: RoutingCompletionHandler
     ) {
-        TODO("Dont know how to pop route segment $routeElementIdentifier") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun pushRouteSegment(
@@ -28,12 +28,10 @@ class ViewChartRoutable(val context: Context) : Routable {
         animated: Boolean,
         completionHandler: RoutingCompletionHandler
     ): Routable {
-        if (routeElementIdentifier == ChartHouseDetailRoutable.id)
-            return RouteHelper.createChartHouseDetailRoutable(context)
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {
-        val id: RouteElementIdentifier = "viewChart"
+        const val id: RouteElementIdentifier = "chartHouseDetail"
     }
 }

@@ -44,11 +44,15 @@ private val applicationReducer: Reducer<ApplicationState> = { action, oldState -
     }
 }
 
+private fun Action.actionString(): String = javaClass.simpleName + when (this) {
+    is SetRouteAction -> " $route"
+    else -> ""
+}
 
-val logMiddleware: Middleware<ApplicationState> = { dispatch, getState ->
+val logMiddleware: Middleware<ApplicationState> = { _, _ ->
     { next ->
         { action ->
-            Log.e("Progressions", "$action")
+            Log.d("ActionLogger", action.actionString())
             next(action)
         }
     }

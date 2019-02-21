@@ -32,7 +32,8 @@
         <activity android:name=".controllers.ViewChartActivity"
                   android:parentActivityName=".controllers.ChartListActivity">
         </activity>
-        <activity android:name=".controllers.ChartHouseDetailActivity">
+        <activity android:name=".controllers.ChartHouseDetailActivity"
+                  android:parentActivityName=".controllers.ViewChartActivity">
         </activity>
         <activity
                 android:name=".controllers.NewChartDobActivity"
