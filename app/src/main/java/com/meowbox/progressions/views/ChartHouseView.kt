@@ -2,7 +2,6 @@ package com.meowbox.progressions.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -21,6 +20,7 @@ class ChartHouseView(context: Context?, attrs: AttributeSet?) : RelativeLayout(c
         house_text_view.text = state.key.palace.name
         branch_text_view.text = state.key.branch.name
         with(stars_layout) {
+            removeAllViews()
             for (star in state.value)
                 addView(TextView(context).apply {
                     text = star.english
@@ -40,30 +40,8 @@ class ChartHouseView(context: Context?, attrs: AttributeSet?) : RelativeLayout(c
 
         store.subscribe(this) { subscription ->
             subscription.select { state ->
-                val poop = state.currentChart!!
-                val pop = poop.chart
-                val dorth = pop.houses
-                val kookle = dorth.entries
-                Log.i("DORTH", "$branch $kookle")
-                val dorgburgler = kookle.first {
-                    val sniggle = it.key
-                    sniggle.branch == branch
-                }
-                dorgburgler
-//                state.currentChart!!.chart.houses.entries.first { it.key.branch == branch }
-            }
+                state.currentChart!!.chart.houses.entries.first { it.key.branch == branch }
+            }.skipRepeats()
         }
     }
 }
-//02-20 08:15:32.698 5399-5399/com.meowbox.progressions I/DORTH: Rabbit [
-// House(palace=Youth, branch=Rooster)=[ZiWei, TanLang, TianKui, DiGong],
-// House(palace=Children, branch=Goat)=[TianFu, YangRen, TianXing],
-// House(palace=Partner, branch=Monkey)=[TianJi, TaiYin, WenChang],
-// House(palace=Wealth, branch=Horse)=[TaiYang, WenQu, TianCun],
-// House(palace=Health, branch=Snake)=[WuQu, PoJun, HuoXing, TuoLuo],
-// House(palace=Career, branch=Dragon)=[TianTong, TianXi],
-// House(palace=Property, branch=Ox)=[LianZhen, QiSha, DiJie],
-// House(palace=Ancestors, branch=Pig)=[TianXiang, TianYao, TianYue],
-// House(palace=Ming, branch=Dog)=[JuMen],
-// House(palace=Pleasure, branch=Rat)=[TianLiang, LingXing, YouBi],
-// House(palace=Superiors, branch=Tiger)=[ZuoFu]]

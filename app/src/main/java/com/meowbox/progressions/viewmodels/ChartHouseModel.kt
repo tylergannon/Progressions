@@ -3,6 +3,7 @@ package com.meowbox.progressions.viewmodels
 import android.os.Parcel
 import android.os.Parcelable
 import com.meowbox.fourpillars.Branch
+import com.meowbox.fourpillars.House
 import com.meowbox.fourpillars.Palace
 import com.meowbox.fourpillars.Star
 import kotlinx.serialization.internal.EnumSerializer
@@ -16,6 +17,8 @@ data class ChartHouseModel(val palace: Palace, val branch: Branch, val stars: Li
         branch = Branch.valueOf(parcel.readString()),
         stars = Json.parse(serializer, parcel.readString())
     )
+
+    fun toHouse() = House(palace, branch)
 
     constructor(branch: Branch, mingLocation: Branch, stars: List<Star>) :
             this(Palace.num(mingLocation - branch), branch, stars)

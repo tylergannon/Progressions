@@ -20,7 +20,6 @@ class ViewChartRoutable(val context: Context) : Routable {
         animated: Boolean,
         completionHandler: RoutingCompletionHandler
     ) {
-        TODO("Dont know how to pop route segment $routeElementIdentifier") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun pushRouteSegment(

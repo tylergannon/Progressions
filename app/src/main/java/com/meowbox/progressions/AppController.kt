@@ -3,11 +3,14 @@ package com.meowbox.progressions
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.meowbox.DateTime
 import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.NewChart
 import com.meowbox.progressions.datastore.Search
+import com.meowbox.progressions.db.ChartData
 import com.meowbox.progressions.db.Db
 import com.meowbox.progressions.db.loadDatabase
+import com.meowbox.progressions.db.toSolarDate
 import com.meowbox.progressions.routes.RootRoutable
 import com.meowbox.progressions.states.ApplicationState
 import com.squareup.leakcanary.LeakCanary
@@ -70,7 +73,7 @@ var router: Router<ApplicationState>? = null
     private set
 
 private const val dbName = "progressions.sqlite3"
-
+private const val ZERO = 0L
 class AppController : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -82,6 +85,13 @@ class AppController : Application() {
         LeakCanary.install(this)
         loadDatabase(applicationContext, dbName)
         Db.dbSetup(AndroidSqliteDriver(Database.Schema, applicationContext, dbName))
+        val count = Db.instance.chartRecordQueries.countMine().executeAsOne()
+        if (count == ZERO) {
+            DateTime(1978, 4, 7, 15, 30).also { dob ->
+                ChartData.saveChart(dob.toSolarDate(), dob, "Tyler Gannon")
+                Log.i("AppController", "Created chart for duder.")
+            }
+        } else Log.i("ApplicationController", "I have $count chart records.")
 
         instance = this
 

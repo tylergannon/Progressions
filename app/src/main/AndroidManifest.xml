@@ -9,14 +9,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <!-- <activity android:name=".MainActivity"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN"/> -->
-
-
-        <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
         <activity android:name=".controllers.NewChartActivity">
         </activity>
         <activity
@@ -29,15 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name=".controllers.ViewChartActivity"
-                  android:parentActivityName=".controllers.ChartListActivity">
+                  android:parentActivityName=".controllers.ChartListActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".controllers.ChartHouseDetailActivity"
-                  android:parentActivityName=".controllers.ViewChartActivity">
+                  android:parentActivityName=".controllers.ViewChartActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <activity
                 android:name=".controllers.NewChartDobActivity"
-                android:label="@string/title_activity_new_chart_dob"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".controllers.NewChartYearActivity">

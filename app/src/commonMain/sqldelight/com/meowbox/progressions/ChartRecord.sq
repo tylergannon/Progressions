@@ -53,4 +53,9 @@ ORDER BY name ASC;
 mine:
 SELECT * FROM chartRecord
 WHERE isMine = 1
-ORDER BY name ASC;
+ORDER BY name ASC LIMIT 100;
+
+countMine:
+SELECT count(1)
+FROM chartRecord
+WHERE isMine = 1;

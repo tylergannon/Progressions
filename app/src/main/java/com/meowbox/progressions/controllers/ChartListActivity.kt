@@ -14,6 +14,7 @@ import com.meowbox.progressions.R
 import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.Search
 import com.meowbox.progressions.datastore.route
+import com.meowbox.progressions.db.ChartData
 import com.meowbox.progressions.db.loadChart
 import com.meowbox.progressions.routes.ChartListRoutable
 import com.meowbox.progressions.routes.NewChartRoutable
@@ -32,6 +33,7 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
         store.dispatch(CurrentChart.SelectCurrentChartAction(chartRecord, loadChart(chartRecord.dob)))
         store.route(ChartListRoutable.id, ViewChartRoutable.id)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +54,8 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
             it.select { state -> state.search }.skipRepeats()
         }
 
-
+//        store.dispatch(Search.LoadSearchResultsAction(ChartData.loadMyChartRecords()))
+//        Log.d(javaClass.simpleName, "${ChartData.loadMyChartRecords()}")
 
         with(chart_list_view) {
             adapter = listViewAdapter
@@ -65,9 +68,9 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
 
     override fun newState(newState: Search.State) {
         Log.d(javaClass.simpleName, "$newState")
-        chartList = newState.searchResults
+
+        chartList = ChartData.loadMyChartRecords()
         listViewAdapter.notifyDataSetChanged()
-//        chart_list_view.adapter = ChartListAdapter()
     }
 
     private fun initRoute() =
@@ -113,24 +116,15 @@ class ChartListActivity : AppCompatActivity(), StoreSubscriber<Search.State> {
         override fun getView(position: Int, existingView: View?, parent: ViewGroup?): View =
             existingView?.apply {
                 (tag as ViewHolder).chartRecord = chartList[position]
-                Log.d(javaClass.simpleName, "The existingView exists... returning $this")
-
             }
                 ?: inflateLayout().apply {
                     tag = ViewHolder(this, chartList[position])
-                    Log.d(javaClass.simpleName, "They are calling for this item ${chartList[position]}")
                 }
 
-        override fun getItem(position: Int): Any = chartList[position].also {
-            Log.d(javaClass.simpleName, "Someone wants item $position.")
-        }
+        override fun getItem(position: Int): Any = chartList[position]
 
-        override fun getItemId(position: Int) = position.toLong().also {
-            Log.d(javaClass.simpleName, "Someone wants ID for position $position")
-        }
+        override fun getItemId(position: Int) = position.toLong()
 
-        override fun getCount() = chartList.size.also {
-            Log.d(javaClass.simpleName, "Someone wants to know I have $it items.")
-        }
+        override fun getCount() = chartList.size
     }
 }

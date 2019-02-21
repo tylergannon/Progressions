@@ -1,6 +1,6 @@
 package com.meowbox.fourpillars
 
-open class House(open val palace: Palace, open val branch: Branch) : Comparable<House> {
+data class House(open val palace: Palace, open val branch: Branch) : Comparable<House> {
     override fun compareTo(other: House): Int {
         return branch.compareTo(other.branch)
     }
