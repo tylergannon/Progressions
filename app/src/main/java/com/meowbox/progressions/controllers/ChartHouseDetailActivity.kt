@@ -4,22 +4,19 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import android.widget.TextView
 import com.meowbox.fourpillars.Star
 import com.meowbox.progressions.R
+import com.meowbox.progressions.StarComment
 import com.meowbox.progressions.datastore.route
 import com.meowbox.progressions.db.ChartData
 import com.meowbox.progressions.routes.ChartListRoutable
 import com.meowbox.progressions.store
 import com.meowbox.progressions.viewmodels.ChartHouseModel
+import com.meowbox.util.fancyJoin
 import kotlinx.android.synthetic.main.activity_chart_house_detail.*
 
 class ChartHouseDetailActivity : AppCompatActivity() {
-    fun List<Set<Star>>.stringRepresentation() = map {
-        if (it.size <= 2) it.first().english
-        else it.map { it.english }.toTypedArray().let { stars ->
-            stars.sliceArray(0..stars.size - 2).joinToString() + ", or " + stars.last()
-        }
-    }.joinToString()
 
     private var house: ChartHouseModel? = null
 
@@ -32,6 +29,27 @@ class ChartHouseDetailActivity : AppCompatActivity() {
                 Log.d(javaClass.simpleName, "DUMB ${item?.itemId}")
             }
 
+
+    private fun List<Set<Star>>.names() =
+        fancyJoin("and") {
+            it.fancyJoin("or") { star -> star.name }
+        }
+
+    private val addCommentsForStar = { star: Star, comments: List<StarComment> ->
+        for (starComment in comments) {
+            val view = layoutInflater.inflate(R.layout.layout_star_commentary, null)
+            view.findViewById<TextView>(R.id.title_textView).text = star.name
+            view.findViewById<TextView>(R.id.additionalStars_textView).text =
+                if (starComment.inHouseWith.isEmpty())
+                    "alone in the ${house!!.palace} Palace"
+                else
+                    "with ${starComment.inHouseWith.names()}"
+            view.findViewById<TextView>(R.id.commentary_textView).text =
+                starComment.comments
+            this.starComments_LinearLayout.addView(view)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chart_house_detail)
@@ -40,12 +58,9 @@ class ChartHouseDetailActivity : AppCompatActivity() {
         house = intent.getParcelableExtra("house")!!
         title = "${house!!.palace.name} Palace"
 
-        star_detail.text = ChartData.getCommentsForPalace(house!!.palace, house!!.stars).map {
-            """${it.key.name}\n\n""" +
-                    it.value.map { starComment ->
-                        starComment.inHouseWith.stringRepresentation() + "\n\n" +
-                                starComment.comments
-                    }
-        }.joinToString("\n\n\n")
+        ChartData.getCommentsForPalace(house!!.palace, house!!.stars).forEach {
+            Log.d(javaClass.simpleName, it.toString())
+            addCommentsForStar(it.key, it.value)
+        }
     }
 }
