@@ -9,6 +9,7 @@ import com.meowbox.fourpillars.Branch
 import com.meowbox.fourpillars.Chart
 import com.meowbox.progressions.R
 import com.meowbox.progressions.datastore.CurrentChart
+import com.meowbox.progressions.datastore.RewindableNavigationState
 import com.meowbox.progressions.datastore.route
 import com.meowbox.progressions.getValue
 import com.meowbox.progressions.routes.ChartHouseDetailRoutable
@@ -37,6 +38,12 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
             )
         )
         store.dispatch(SetRouteAction(route))
+    }
+
+    override fun onBackPressed() {
+        Log.d(javaClass.simpleName, "Going back")
+        store.dispatch(RewindableNavigationState.NavigateBackAction())
+        super.onBackPressed()
     }
 
     private var chart: Chart? = null

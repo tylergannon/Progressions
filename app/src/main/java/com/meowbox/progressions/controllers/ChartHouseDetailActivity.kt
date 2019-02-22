@@ -55,7 +55,7 @@ class ChartHouseDetailActivity : AppCompatActivity() {
     private val addCommentsForStar = { star: Star, comments: List<StarComment> ->
         for (starComment in comments) {
             val view = layoutInflater.inflate(R.layout.layout_star_commentary, null)
-            view.findViewById<TextView>(R.id.title_textView).text = star.name
+            view.findViewById<TextView>(R.id.title_textView).text = star.english
             view.findViewById<TextView>(R.id.additionalStars_textView).text =
                 if (starComment.inHouseWith.isEmpty())
                     "alone in the ${house!!.palace} Palace"
