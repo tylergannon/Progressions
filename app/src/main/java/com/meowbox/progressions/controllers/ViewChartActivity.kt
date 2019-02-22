@@ -10,7 +10,6 @@ import com.meowbox.fourpillars.Chart
 import com.meowbox.progressions.R
 import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.RewindableNavigationState
-import com.meowbox.progressions.datastore.route
 import com.meowbox.progressions.getValue
 import com.meowbox.progressions.routes.ChartHouseDetailRoutable
 import com.meowbox.progressions.routes.ChartListRoutable
@@ -60,7 +59,9 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
 
     override fun onOptionsItemSelected(item: MenuItem?) =
         if (item?.itemId == 16908332)
-            false.also { store.route(ChartListRoutable.id) }
+            false.also {
+                store.dispatch(RewindableNavigationState.NavigateUpAction(ChartListRoutable.id))
+            }
                 .also { Log.d(javaClass.simpleName, "Routing UP.") }
         else
             super.onOptionsItemSelected(item).also {

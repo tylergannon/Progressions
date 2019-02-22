@@ -2,9 +2,7 @@ package com.meowbox.progressions.datastore
 
 import android.util.Log
 import org.rekotlin.Action
-import org.rekotlinrouter.NavigationReducer
-import org.rekotlinrouter.NavigationState
-import org.rekotlinrouter.SetRouteAction
+import org.rekotlinrouter.*
 
 class RewindableNavigationState {
     data class State(
@@ -13,6 +11,9 @@ class RewindableNavigationState {
     )
 
     class NavigateBackAction : Action
+    class NavigateUpAction(vararg val route: RouteElementIdentifier) : Action {
+        val setRouteAction = SetRouteAction(Route(route.toMutableList()))
+    }
 
     companion object {
         fun reducer(action: Action, state: State): State =
@@ -22,10 +23,20 @@ class RewindableNavigationState {
                         is NavigateBackAction -> state.history.last().also {
                             Log.d("RewindableNavState", "$it")
                         }
+                        is NavigateUpAction -> NavigationReducer.reduce(action.setRouteAction, state.routingState)
                         else -> NavigationReducer.reduce(action, state.routingState)
                     },
                     history = when (action) {
                         is SetRouteAction -> state.history.plus(oldRoutingState)
+                        is NavigateUpAction -> with(state.history) {
+                            val indexOfTargetRoute = this.indexOfFirst {
+                                it.route.toList() == action.route.toList()
+                            }
+                            if (indexOfTargetRoute >= 0)
+                                subList(0, indexOfTargetRoute)
+                            else
+                                emptyList()
+                        }
                         is NavigateBackAction -> with(state.history) {
                             when (size) {
                                 0 -> emptyList()

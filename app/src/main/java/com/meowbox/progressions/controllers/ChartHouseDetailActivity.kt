@@ -8,9 +8,11 @@ import android.widget.TextView
 import com.meowbox.fourpillars.Star
 import com.meowbox.progressions.R
 import com.meowbox.progressions.StarComment
+import com.meowbox.progressions.datastore.RewindableNavigationState
 import com.meowbox.progressions.datastore.route
 import com.meowbox.progressions.db.ChartData
 import com.meowbox.progressions.routes.ChartListRoutable
+import com.meowbox.progressions.routes.ViewChartRoutable
 import com.meowbox.progressions.store
 import com.meowbox.progressions.viewmodels.ChartHouseModel
 import com.meowbox.util.fancyJoin
@@ -22,7 +24,9 @@ class ChartHouseDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) =
         if (item?.itemId == 16908332)
-            false.also { store.route(ChartListRoutable.id) }
+            false.also {
+                store.route(ChartListRoutable.id, ViewChartRoutable.id)
+            }
         else
             super.onOptionsItemSelected(item).also {
                 Log.d(javaClass.simpleName, "I don't recognize ${item?.itemId}")
@@ -42,9 +46,9 @@ class ChartHouseDetailActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
+        Log.d(javaClass.simpleName, "Going back")
+        store.dispatch(RewindableNavigationState.NavigateBackAction())
         super.onBackPressed()
-
     }
 
     private fun List<Set<Star>>.names() =
