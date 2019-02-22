@@ -17,6 +17,7 @@ import com.meowbox.progressions.store
 import com.meowbox.progressions.viewmodels.ChartHouseModel
 import com.meowbox.util.fancyJoin
 import kotlinx.android.synthetic.main.activity_chart_house_detail.*
+import ru.noties.markwon.Markwon
 
 class ChartHouseDetailActivity : AppCompatActivity() {
 
@@ -66,8 +67,10 @@ class ChartHouseDetailActivity : AppCompatActivity() {
                     "alone in the ${house!!.palace} Palace"
                 else
                     "with ${starComment.inHouseWith.names()}"
+
             view.findViewById<TextView>(R.id.commentary_textView).text =
-                starComment.comments
+                Markwon.markdown(applicationContext, starComment.comments)
+
             this.starComments_LinearLayout.addView(view)
         }
     }

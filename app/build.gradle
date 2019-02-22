@@ -116,6 +116,7 @@ kotlin {
                 implementation "com.squareup.sqldelight:android-driver:1.0.3"
                 implementation 'org.rekotlinrouter:rekotlin-router:0.1.9'
                 implementation files("../lib/rekotlin.jar")
+                implementation 'ru.noties:markwon:2.0.1'
 
             }
         }
