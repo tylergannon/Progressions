@@ -43,19 +43,7 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
 
     override fun newState(state: CurrentChart.State) {
         this.chart = state.chart
-        personName_TextView.text = state.chartRecord.name
         title = state.chartRecord.name
-        dob_TextView.text = state.chartRecord.dob.toString()
-
-        yearStem_TextView.text = state.chart.yearPillar.stem.element.name
-        monthStem_TextView.text = state.chart.monthPillar.stem.element.name
-        dayStem_TextView.text = state.chart.dayPillar.stem.element.name
-        hourStem_TextView.text = state.chart.hourPillar.stem.element.name
-
-        yearBranch_TextView.text = state.chart.yearPillar.branch.name
-        monthBranch_TextView.text = state.chart.monthPillar.branch.name
-        dayBranch_TextView.text = state.chart.dayPillar.branch.name
-        hourBranch_TextView.text = state.chart.hourPillar.branch.name
     }
 
     override fun onDestroy() {

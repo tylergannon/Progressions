@@ -23,16 +23,33 @@ class ChartHouseDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?) =
         if (item?.itemId == 16908332)
             false.also { store.route(ChartListRoutable.id) }
-                .also { Log.d(javaClass.simpleName, "Routing UP.") }
         else
             super.onOptionsItemSelected(item).also {
-                Log.d(javaClass.simpleName, "DUMB ${item?.itemId}")
+                Log.d(javaClass.simpleName, "I don't recognize ${item?.itemId}")
             }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chart_house_detail)
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        house = intent.getParcelableExtra("house")!!
+        title = "${house!!.palace.name} Palace"
+
+        ChartData.getCommentsForPalace(house!!.palace, house!!.stars).forEach {
+            addCommentsForStar(it.key, it.value)
+        }
+    }
+
+    override fun onBackPressed() {
+
+        super.onBackPressed()
+
+    }
 
     private fun List<Set<Star>>.names() =
         fancyJoin("and") {
-            it.fancyJoin("or") { star -> star.name }
+            it.fancyJoin("or") { star -> star.english }
         }
 
     private val addCommentsForStar = { star: Star, comments: List<StarComment> ->
@@ -47,20 +64,6 @@ class ChartHouseDetailActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.commentary_textView).text =
                 starComment.comments
             this.starComments_LinearLayout.addView(view)
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chart_house_detail)
-        setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        house = intent.getParcelableExtra("house")!!
-        title = "${house!!.palace.name} Palace"
-
-        ChartData.getCommentsForPalace(house!!.palace, house!!.stars).forEach {
-            Log.d(javaClass.simpleName, it.toString())
-            addCommentsForStar(it.key, it.value)
         }
     }
 }
