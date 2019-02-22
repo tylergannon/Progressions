@@ -8,10 +8,12 @@
 
     <TextView android:id="@+id/house_text_view"
               android:layout_alignParentTop="true"
-              android:layout_height="10dp"
+              android:layout_height="wrap_content"
               android:layout_width="match_parent"
-              android:background="@color/design_default_color_primary_dark"
-              android:textSize="8sp"/>
+              android:background="?attr/colorAccent"
+              android:textSize="12sp" android:text="Partners" android:textStyle="bold"
+              android:layout_marginBottom="4sp" android:paddingBottom="2dp" android:paddingLeft="4sp"
+              android:theme="@style/AlertDialog.AppCompat.Light"/>
 
     <LinearLayout android:id="@+id/stars_layout"
                   android:orientation="vertical"
@@ -27,7 +29,7 @@
               android:layout_height="10dp"
               android:layout_alignParentBottom="true"
               android:layout_alignParentEnd="true"
-              android:textSize="8sp"
+              android:textSize="10sp"
               android:textAlignment="viewEnd"
               android:paddingTop="0dp"/>
 </RelativeLayout>

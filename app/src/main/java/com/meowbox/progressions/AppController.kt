@@ -6,6 +6,7 @@ import android.util.Log
 import com.meowbox.DateTime
 import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.NewChart
+import com.meowbox.progressions.datastore.RewindableNavigationState
 import com.meowbox.progressions.datastore.Search
 import com.meowbox.progressions.db.ChartData
 import com.meowbox.progressions.db.Db
@@ -13,7 +14,6 @@ import com.meowbox.progressions.db.loadDatabase
 import com.meowbox.progressions.db.toSolarDate
 import com.meowbox.progressions.routes.RootRoutable
 import com.meowbox.progressions.states.ApplicationState
-import com.squareup.leakcanary.LeakCanary
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import org.rekotlin.Action
 import org.rekotlin.Middleware
@@ -27,18 +27,17 @@ typealias ComponentReducer = (Action, ApplicationState) -> ApplicationState
 
 
 private val applicationReducer: Reducer<ApplicationState> = { action, oldState ->
-    with(
-        oldState ?: ApplicationState(
-            navigationState = NavigationReducer.handleAction(action, oldState?.navigationState)
+    var oldState = oldState ?: ApplicationState(
+        RewindableNavigationState.State(
+            routingState = NavigationReducer.handleAction(action, null)
         )
-    ) {
-        copy(
-            navigationState = NavigationReducer.reduce(action, navigationState),
-            currentChart = CurrentChart.reducer(action, currentChart),
-            search = Search.reducer(action, search),
-            newChart = NewChart.reducer(action, newChart)
-        )
-    }.also {
+    )
+    oldState.copy(
+        navigationState = RewindableNavigationState.reducer(action, oldState.navigationState),
+        currentChart = CurrentChart.reducer(action, oldState.currentChart),
+        search = Search.reducer(action, oldState.search),
+        newChart = NewChart.reducer(action, oldState.newChart)
+    ).also {
         when (action) {
             is CurrentChart.SelectCurrentChartAction -> Log.i("Reducer", "$it")
             is SetRouteAction -> Log.i("NavigationReducer", "${it.navigationState}")
@@ -55,6 +54,7 @@ private fun Action.actionString(): String = javaClass.simpleName + when (this) {
 val logMiddleware: Middleware<ApplicationState> = { _, _ ->
     { next ->
         { action ->
+
             Log.d("ActionLogger", action.actionString())
             next(action)
         }
@@ -77,12 +77,12 @@ private const val ZERO = 0L
 class AppController : Application() {
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        LeakCanary.install(this)
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return
+//        }
+//        LeakCanary.install(this)
         loadDatabase(applicationContext, dbName)
         Db.dbSetup(AndroidSqliteDriver(Database.Schema, applicationContext, dbName))
         val count = Db.instance.chartRecordQueries.countMine().executeAsOne()
@@ -96,7 +96,7 @@ class AppController : Application() {
         instance = this
 
         router = Router(store, RootRoutable(applicationContext)) { subscription ->
-            subscription.select { state -> state.navigationState }
+            subscription.select { state -> state.navigationState.routingState }
         }
     }
 

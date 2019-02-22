@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.TextView
 import com.meowbox.fourpillars.Branch
 import com.meowbox.fourpillars.House
 import com.meowbox.fourpillars.Star
@@ -22,9 +21,10 @@ class ChartHouseView(context: Context?, attrs: AttributeSet?) : RelativeLayout(c
         with(stars_layout) {
             removeAllViews()
             for (star in state.value)
-                addView(TextView(context).apply {
-                    text = star.english
+                addView(StarView(star, state.key.branch, context).apply {
+                    //                    text = star.english
                     id = star.ordinal
+
                 })
         }
     }
