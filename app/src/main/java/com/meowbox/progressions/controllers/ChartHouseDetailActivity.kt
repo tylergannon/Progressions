@@ -42,6 +42,7 @@ class ChartHouseDetailActivity : AppCompatActivity() {
 
         ChartData.getCommentsForPalace(house!!.palace, house!!.stars).forEach {
             addCommentsForStar(it.key, it.value)
+            Log.d(javaClass.simpleName, "$it")
         }
     }
 

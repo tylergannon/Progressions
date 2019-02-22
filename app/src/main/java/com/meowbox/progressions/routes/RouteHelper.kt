@@ -3,7 +3,9 @@ package com.meowbox.progressions.routes
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.meowbox.fourpillars.Branch
 import com.meowbox.progressions.controllers.*
+import com.meowbox.progressions.getValue
 import com.meowbox.progressions.store
 import com.meowbox.progressions.viewmodels.ChartHouseModel
 
@@ -49,8 +51,14 @@ object RouteHelper {
         with(Intent(context, ChartHouseDetailActivity::class.java)) {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             val currentRoute = store.state.navigationState.routingState.route
-            val intentData =
-                store.state.navigationState.routingState.getRouteSpecificState<ChartHouseModel>(currentRoute)
+            val branch = Branch.valueOf(currentRoute.last())
+
+            val intentData = with(store.state.currentChart!!.chart) {
+                ChartHouseModel(branch, progressTo ?: ming, houses.getValue(branch))
+            }
+
+            Log.d(javaClass.simpleName, "Loadeding with ${intentData.stars}")
+
             putExtra("house", intentData)
             Log.d("RouteHelper", "createChartHouseDetailRoutable")
             context.startActivity(this)

@@ -10,16 +10,12 @@ import com.meowbox.fourpillars.Chart
 import com.meowbox.progressions.R
 import com.meowbox.progressions.datastore.CurrentChart
 import com.meowbox.progressions.datastore.RewindableNavigationState
-import com.meowbox.progressions.getValue
-import com.meowbox.progressions.routes.ChartHouseDetailRoutable
+import com.meowbox.progressions.datastore.route
 import com.meowbox.progressions.routes.ChartListRoutable
 import com.meowbox.progressions.routes.ViewChartRoutable
 import com.meowbox.progressions.store
-import com.meowbox.progressions.viewmodels.ChartHouseModel
 import kotlinx.android.synthetic.main.activity_view_chart.*
 import org.rekotlin.StoreSubscriber
-import org.rekotlinrouter.SetRouteAction
-import org.rekotlinrouter.SetRouteSpecificData
 
 
 class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.State> {
@@ -27,16 +23,7 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
     fun clickHouse(view: View) {
         val branch = Branch.valueOf(view.tag.toString())
         Log.e("ViewChartActivity", "Clicked $branch")
-        val route = arrayListOf(ChartListRoutable.id, ViewChartRoutable.id, ChartHouseDetailRoutable.id)
-        store.dispatch(
-            SetRouteSpecificData(
-                route, ChartHouseModel(
-                    branch, chart!!.progressTo ?: chart!!.ming,
-                    chart!!.houses.getValue(branch)
-                )
-            )
-        )
-        store.dispatch(SetRouteAction(route))
+        store.route(ChartListRoutable.id, ViewChartRoutable.id, branch.name)
     }
 
     override fun onBackPressed() {
@@ -75,12 +62,6 @@ class ViewChartActivity : AppCompatActivity(), StoreSubscriber<CurrentChart.Stat
 
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-
-//        if (actionBar == null)
-//            Log.d(javaClass.simpleName, "I don't have action bar.")
-//        else
-//            actionBar.setDisplayHomeAsUpEnabled(true)
 
         store.subscribe(this) { subscription ->
             subscription.select { it.currentChart!! }
